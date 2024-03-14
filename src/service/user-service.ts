@@ -4,7 +4,7 @@ import {
     toUserResponse,
     UpdateUserRequest,
     UserResponse
-} from "../model/model-user";
+} from "../model/user-model";
 import {prismaClient} from "../application/database";
 import {UserValidation} from "../validation/user-validation";
 import {Validation} from "../validation/validation";
