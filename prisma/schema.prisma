@@ -12,3 +12,165 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id             String   @id @db.VarChar(100)
+  nama_lengkap   String   @db.VarChar(100)
+  email          String   @db.VarChar(320)
+  password       String   @db.VarChar(30)
+  token          String?  @db.VarChar(100)
+  verified_email Boolean? @db.TinyInt()
+  latitude       Decimal? @db.Decimal(32, 16)
+  longitude      Decimal? @db.Decimal(32, 16)
+
+  Review    Review[]
+  Cart      Cart[]
+  Order     Order[]
+  Langganan Langganan[]
+
+  @@map("users")
+}
+
+model Pedagang {
+  id                String   @id @db.VarChar(100)
+  nama_warung       String   @db.VarChar(100)
+  nama_pedagang     String   @db.VarChar(100)
+  image             String   @db.VarChar(2000)
+  status            Boolean? @db.TinyInt()
+  jam_buka          String   @db.VarChar(100)
+  jam_tutup         String   @db.VarChar(100)
+  daerah_dagang     String   @db.VarChar(100)
+  rating            Decimal  @db.Decimal()
+  sertifikasi_halal Boolean? @db.TinyInt()
+  latitude          Decimal? @db.Decimal(32, 16)
+  longitude         Decimal? @db.Decimal(32, 16)
+
+  Jajanan                   Jajanan[]
+  Image_Verifikasi_Pedagang Image_Verifikasi_Pedagang[]
+  Review                    Review[]
+  Cart                      Cart[]
+  Order                     Order[]
+  Langganan                 Langganan[]
+  Iklan                     Iklan[]
+
+  @@map("pedagangs")
+}
+
+model Jajanan {
+  id          String  @id @db.VarChar(100)
+  pedagang_id String  @db.VarChar(100)
+  nama        String  @db.VarChar(100)
+  harga       Int     @db.Int()
+  image       String  @db.VarChar(2000)
+  status      Boolean @db.TinyInt()
+
+  pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
+
+  @@map("jajanans")
+}
+
+model Image_Verifikasi_Pedagang {
+  id          String @id @db.VarChar(100)
+  pedagang_id String @db.VarChar(100)
+  url         String @db.VarChar(2000)
+
+  pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
+
+  @@map("image_verifikasi_pedagangs")
+}
+
+model Review {
+  id          String   @id @db.VarChar(100)
+  user_id     String   @db.VarChar(100)
+  pedagang_id String   @db.VarChar(100)
+  rating      Decimal  @db.Decimal()
+  review      String   @db.VarChar(1000)
+  created_at  DateTime @db.DateTime()
+
+  user     User     @relation(fields: [user_id], references: [id])
+  pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
+
+  @@map("reviews")
+}
+
+model Cart {
+  id          String @id @db.VarChar(100)
+  user_id     String @db.VarChar(100)
+  pedagang_id String @db.VarChar(100)
+
+  user         User           @relation(fields: [user_id], references: [id])
+  pedagang     Pedagang       @relation(fields: [pedagang_id], references: [id])
+  Cart_Jajanan Cart_Jajanan[]
+
+  @@map("carts")
+}
+
+model Cart_Jajanan {
+  id         String @id @db.VarChar(100)
+  cart_id    String @db.VarChar(100)
+  jajanan_id String @db.VarChar(100)
+  jumlah     Int    @db.Int()
+  total      Int    @db.Int()
+
+  cart Cart @relation(fields: [cart_id], references: [id])
+
+  @@map("cart_jajanans")
+}
+
+model Order {
+  id                String   @id @db.VarChar(100)
+  user_id           String   @db.VarChar(100)
+  pedagang_id       String   @db.VarChar(100)
+  metode_pembayaran String   @db.VarChar(100)
+  status            String   @db.VarChar(100)
+  created_at        DateTime @db.DateTime()
+
+  user          User            @relation(fields: [user_id], references: [id])
+  pedagang      Pedagang        @relation(fields: [pedagang_id], references: [id])
+  Order_Jajanan Order_Jajanan[]
+
+  @@map("orders")
+}
+
+model Order_Jajanan {
+  id         String @id @db.VarChar(100)
+  order_id   String @db.VarChar(100)
+  jajanan_id String @db.VarChar(100)
+  jumlah     Int    @db.Int()
+  total      Int    @db.Int()
+
+  order Order @relation(fields: [order_id], references: [id])
+
+  @@map("order_jajanans")
+}
+
+model Langganan {
+  id          String @id @db.VarChar(100)
+  user_id     String @db.VarChar(100)
+  pedagang_id String @db.VarChar(100)
+
+  user     User     @relation(fields: [user_id], references: [id])
+  pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
+
+  @@map("langganans")
+}
+
+model Iklan {
+  id            String   @id @db.VarChar(100)
+  pedagang_id   String   @db.VarChar(100)
+  nominal_bayar Int      @db.Int()
+  expired_at    DateTime @db.DateTime()
+
+  pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
+
+  @@map("iklans")
+}
+
+model Zona_Terlarang {
+  id        String  @id @db.VarChar(100)
+  latitude  Decimal @db.Decimal(32, 16)
+  longitude Decimal @db.Decimal(32, 16)
+  radius    Int     @db.Int()
+
+  @@map("zona_terlarangs")
+}
