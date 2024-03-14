@@ -20,8 +20,8 @@ model User {
   password       String   @db.VarChar(30)
   token          String?  @db.VarChar(100)
   verified_email Boolean? @db.TinyInt()
-  latitude       Decimal? @db.Decimal(32, 16)
-  longitude      Decimal? @db.Decimal(32, 16)
+  latitude       Int?     @db.Int()
+  longitude      Int?     @db.Int()
 
   Review    Review[]
   Cart      Cart[]
@@ -40,10 +40,10 @@ model Pedagang {
   jam_buka          String   @db.VarChar(100)
   jam_tutup         String   @db.VarChar(100)
   daerah_dagang     String   @db.VarChar(100)
-  rating            Decimal  @db.Decimal()
+  rating            Float    @db.Double()
   sertifikasi_halal Boolean? @db.TinyInt()
-  latitude          Decimal? @db.Decimal(32, 16)
-  longitude         Decimal? @db.Decimal(32, 16)
+  latitude          Int?     @db.Int()
+  longitude         Int?     @db.Int()
 
   Jajanan                   Jajanan[]
   Image_Verifikasi_Pedagang Image_Verifikasi_Pedagang[]
@@ -83,7 +83,7 @@ model Review {
   id          String   @id @db.VarChar(100)
   user_id     String   @db.VarChar(100)
   pedagang_id String   @db.VarChar(100)
-  rating      Decimal  @db.Decimal()
+  rating      Float    @db.Double()
   review      String   @db.VarChar(1000)
   created_at  DateTime @db.DateTime()
 
@@ -167,10 +167,10 @@ model Iklan {
 }
 
 model Zona_Terlarang {
-  id        String  @id @db.VarChar(100)
-  latitude  Decimal @db.Decimal(32, 16)
-  longitude Decimal @db.Decimal(32, 16)
-  radius    Int     @db.Int()
+  id        String @id @db.VarChar(100)
+  latitude  Int?   @db.Int()
+  longitude Int?   @db.Int()
+  radius    Int    @db.Int()
 
   @@map("zona_terlarangs")
 }
