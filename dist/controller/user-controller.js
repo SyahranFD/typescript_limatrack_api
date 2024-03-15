@@ -40,5 +40,45 @@ class UserController {
             }
         });
     }
+    static get(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield user_service_1.UserService.get(req.user);
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    static update(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const request = req.body;
+                const response = yield user_service_1.UserService.update(req.user, request);
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    static logout(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield user_service_1.UserService.logout(req.user);
+                res.status(200).json({
+                    data: "Berhasil Logout"
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.UserController = UserController;

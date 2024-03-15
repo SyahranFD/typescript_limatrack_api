@@ -6,8 +6,8 @@ export type UserResponse = {
     email: string;
     token?: string | null;
     verified_email?: boolean | null;
-    latitude?: number | null;
-    longitude?: number | null;
+    latitude?: string | null;
+    longitude?: string | null;
 }
 
 export type CreateUserRequest = {
@@ -27,10 +27,8 @@ export type UpdateUserRequest = {
     nama_lengkap: string;
     email: string;
     password: string;
-    token?: string | null;
-    verified_email?: boolean | null;
-    latitude?: number | null;
-    longitude?: number | null;
+    latitude?: string | null;
+    longitude?: string | null;
 }
 
 export function toUserResponse(user: User): UserResponse {

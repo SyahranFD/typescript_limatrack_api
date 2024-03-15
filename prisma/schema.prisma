@@ -20,8 +20,8 @@ model User {
   password       String   @db.VarChar(100)
   token          String?  @db.VarChar(100)
   verified_email Boolean? @db.TinyInt()
-  latitude       Int?     @db.Int()
-  longitude      Int?     @db.Int()
+  latitude       String?  @db.VarChar(100)
+  longitude      String?  @db.VarChar(100)
 
   Review    Review[]
   Cart      Cart[]
@@ -33,17 +33,21 @@ model User {
 
 model Pedagang {
   id                String   @id @db.VarChar(100)
+  email             String   @unique @db.VarChar(320)
+  password          String   @db.VarChar(100)
+  verified_email    Boolean? @db.TinyInt()
+  token             String?  @db.VarChar(100)
   nama_warung       String   @db.VarChar(100)
   nama_pedagang     String   @db.VarChar(100)
-  image             String   @db.VarChar(2000)
-  status            Boolean? @db.TinyInt()
-  jam_buka          String   @db.VarChar(100)
-  jam_tutup         String   @db.VarChar(100)
-  daerah_dagang     String   @db.VarChar(100)
-  rating            Float    @db.Double()
+  image             String?  @db.VarChar(2000)
+  status            String?  @db.VarChar(100)
+  jam_buka          String?  @db.VarChar(100)
+  jam_tutup         String?  @db.VarChar(100)
+  daerah_dagang     String?  @db.VarChar(100)
+  rating            Float?   @db.Double()
   sertifikasi_halal Boolean? @db.TinyInt()
-  latitude          Int?     @db.Int()
-  longitude         Int?     @db.Int()
+  latitude          String?  @db.VarChar(100)
+  longitude         String?  @db.VarChar(100)
 
   Jajanan                   Jajanan[]
   Image_Verifikasi_Pedagang Image_Verifikasi_Pedagang[]
@@ -168,8 +172,8 @@ model Iklan {
 
 model Zona_Terlarang {
   id        String @id @db.VarChar(100)
-  latitude  Int?   @db.Int()
-  longitude Int?   @db.Int()
+  latitude  String @db.VarChar(100)
+  longitude String @db.VarChar(100)
   radius    Int    @db.Int()
 
   @@map("zona_terlarangs")

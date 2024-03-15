@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
-const model_user_1 = require("../model/model-user");
+const user_model_1 = require("../model/user-model");
 const database_1 = require("../application/database");
 const user_validation_1 = require("../validation/user-validation");
 const validation_1 = require("../validation/validation");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const response_error_1 = require("../error/response-error");
 const uuid_1 = require("uuid");
+const logging_1 = require("../application/logging");
 class UserService {
     static register(request) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,7 +38,7 @@ class UserService {
             const user = yield database_1.prismaClient.user.create({
                 data: registerRequest
             });
-            return (0, model_user_1.toUserResponse)(user);
+            return (0, user_model_1.toUserResponse)(user);
         });
     }
     static login(request) {
@@ -52,6 +53,8 @@ class UserService {
                 throw new response_error_1.ResponseError(401, "Email is wrong");
             }
             const isPasswordValid = yield bcrypt_1.default.compare(loginRequest.password, user.password);
+            logging_1.logger.debug("isPasswordValid: " + isPasswordValid);
+            logging_1.logger.debug("user.password: " + user.password);
             if (!isPasswordValid) {
                 throw new response_error_1.ResponseError(401, "password is wrong");
             }
@@ -63,9 +66,39 @@ class UserService {
                     token: (0, uuid_1.v4)()
                 }
             });
-            const response = (0, model_user_1.toUserResponse)(user);
+            const response = (0, user_model_1.toUserResponse)(user);
             response.token = user.token;
             return response;
+        });
+    }
+    static get(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, user_model_1.toUserResponse)(user);
+        });
+    }
+    static update(user, request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updateRequest = validation_1.Validation.validate(user_validation_1.UserValidation.UPDATE, request);
+            const result = yield database_1.prismaClient.user.update({
+                where: {
+                    email: user.email
+                },
+                data: updateRequest
+            });
+            return (0, user_model_1.toUserResponse)(result);
+        });
+    }
+    static logout(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield database_1.prismaClient.user.update({
+                where: {
+                    email: user.email
+                },
+                data: {
+                    token: null
+                }
+            });
+            return (0, user_model_1.toUserResponse)(result);
         });
     }
 }
