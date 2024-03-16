@@ -6,7 +6,7 @@ export class PedagangTest {
         await prismaClient.pedagang.create({
             data: {
                 id: "pedagang-1",
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: await bcrypt.hash("rafapass", 10),
                 nama_warung: "Warung Rafa",
                 nama_pedagang: "Rafa Syahran",

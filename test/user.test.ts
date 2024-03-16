@@ -2,11 +2,13 @@ import supertest from "supertest";
 import {UserTest} from "./user-test-util";
 import {web} from "../src/application/web";
 import {logger} from "../src/application/logging";
+import {OtpTest} from "./otp-util-test";
 
 describe('POST /api/users/register', () => {
 
     afterEach(async () => {
         await UserTest.delete();
+        // await OtpTest.delete();
     })
 
     it('should reject register new user if request is invalid', async () => {
@@ -30,7 +32,7 @@ describe('POST /api/users/register', () => {
             .post("/api/users/register")
             .send({
                 nama_lengkap: "Rafa Syahran",
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "rafapass"
             });
 
@@ -40,18 +42,21 @@ describe('POST /api/users/register', () => {
     });
 
     it('should register new user', async () => {
+        await OtpTest.create();
+
         const response = await supertest(web)
             .post("/api/users/register")
             .send({
                 nama_lengkap: "Rafa Syahran",
-                email: "rafa@gmail.com",
-                password: "rafapass"
+                email: "fadhilrafa1@gmail.com",
+                password: "rafapass",
+                otp: "123456"
             });
 
         logger.debug(response.body);
         expect(response.status).toBe(200);
         expect(response.body.data.nama_lengkap).toBe("Rafa Syahran");
-        expect(response.body.data.email).toBe("rafa@gmail.com");
+        expect(response.body.data.email).toBe("fadhilrafa1@gmail.com");
     });
 
 });
@@ -83,7 +88,7 @@ describe('POST /api/users/login', () => {
         const response = await supertest(web)
             .post("/api/users/login")
             .send({
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "wrongpass"
             });
 
@@ -96,14 +101,14 @@ describe('POST /api/users/login', () => {
         const response = await supertest(web)
             .post("/api/users/login")
             .send({
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "rafapass",
             });
 
         logger.debug(response.body);
         expect(response.status).toBe(200);
         expect(response.body.data.nama_lengkap).toBe("Rafa Syahran");
-        expect(response.body.data.email).toBe("rafa@gmail.com");
+        expect(response.body.data.email).toBe("fadhilrafa1@gmail.com");
         expect(response.body.data.token).toBeDefined();
     });
 });
@@ -125,7 +130,7 @@ describe('GET /api/users/current', () => {
         logger.debug(response.body);
         expect(response.status).toBe(200);
         expect(response.body.data.nama_lengkap).toBe("Rafa Syahran");
-        expect(response.body.data.email).toBe("rafa@gmail.com");
+        expect(response.body.data.email).toBe("fadhilrafa1@gmail.com");
     });
 
     it('should reject get user if token is invalid', async () => {
@@ -158,14 +163,14 @@ describe('PUT /api/users/current', () => {
             .set("X-API-TOKEN", "token-1")
             .send({
                 nama_lengkap: "Rafa Syahra",
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "rafapass",
             });
 
         logger.debug(response.body);
         expect(response.status).toBe(200);
         expect(response.body.data.nama_lengkap).toBe("Rafa Syahra");
-        expect(response.body.data.email).toBe("rafa@gmail.com");
+        expect(response.body.data.email).toBe("fadhilrafa1@gmail.com");
     });
 });
 

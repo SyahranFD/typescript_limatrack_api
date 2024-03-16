@@ -2,18 +2,22 @@ import supertest from "supertest";
 import {web} from "../src/application/web";
 import {PedagangTest} from "./pedagang-util-test";
 import {logger} from "../src/application/logging";
+import {OtpTest} from "./otp-util-test";
 
 describe('POST /api/pedagang/register', () => {
 
     afterEach(async () => {
         await PedagangTest.delete();
+        await OtpTest.delete();
     });
 
     it('should be able to register pedagang', async () => {
+        await OtpTest.create();
+
         const response = await supertest(web)
             .post("/api/pedagang/register")
             .send({
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "rafapass",
                 nama_warung: "Warung Rafa",
                 nama_pedagang: "Rafa Syahran",
@@ -26,12 +30,13 @@ describe('POST /api/pedagang/register', () => {
                 sertifikasi_halal: true,
                 latitude: "-6.753575877006632",
                 longitude: "110.84286600359306",
+                otp: "123456"
             });
 
         logger.debug(response.body);
         expect(response.status).toBe(200);
         expect(response.body.data.id).toBeDefined();
-        expect(response.body.data.email).toBe("rafa@gmail.com");
+        expect(response.body.data.email).toBe("fadhilrafa1@gmail.com");
         expect(response.body.data.nama_warung).toBe("Warung Rafa");
         expect(response.body.data.nama_pedagang).toBe("Rafa Syahran");
         expect(response.body.data.image).toBe("image-1");
@@ -59,7 +64,7 @@ describe('POST /api/pedagang/login', () => {
         const response = await supertest(web)
             .post("/api/pedagang/login")
             .send({
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: "rafapass"
             });
 

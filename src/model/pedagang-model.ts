@@ -20,7 +20,6 @@ export type PedagangResponse = {
 }
 
 export type CreatePedagangRequest = {
-    id: string;
     email: string;
     password: string;
     nama_warung: string;
@@ -34,6 +33,7 @@ export type CreatePedagangRequest = {
     sertifikasi_halal?: boolean | null;
     latitude?: string | null;
     longitude?: string | null;
+    otp: string;
 }
 
 export type LoginPedagangRequest = {

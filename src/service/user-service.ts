@@ -25,15 +25,43 @@ export class UserService {
         });
 
         if (totalUserWithSameEmail != 0) {
-            throw new ResponseError(409, 'Email sudah terdaftar');
+            throw new ResponseError(409, 'Email already registered');
         }
 
-        registerRequest.id = 'user-' + uuid();
+        const otp = await prismaClient.otp.findFirst({
+            where: {
+                email: registerRequest.email
+            }
+        })
+
+        if (registerRequest.otp != otp!.otp) {
+            throw new ResponseError(401, 'OTP Wrong');
+        }
+
         registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
+        const { otp: string, ...registerData } = registerRequest;
 
         const user = await prismaClient.user.create({
-            data: registerRequest
+            data: {
+                id: 'user-' + uuid(),
+                ...registerData
+            }
         });
+
+        await prismaClient.otp.deleteMany({
+            where: {
+                email: registerRequest.email
+            }
+        })
+
+        await prismaClient.user.update({
+            where: {
+                email: registerRequest.email
+            },
+            data: {
+                verified_email: true
+            }
+        })
 
         return toUserResponse(user);
     }

@@ -16,24 +16,52 @@ import {toUserResponse} from "../model/user-model";
 
 export class PedagangService {
     static async register(request: CreatePedagangRequest): Promise<PedagangResponse> {
-        const pedagangRequest = Validation.validate(PedagangValidation.REGISTER, request);
+        const registerRequest = Validation.validate(PedagangValidation.REGISTER, request);
 
         const totalPedagangWithSameEmail = await prismaClient.pedagang.count({
             where: {
-                email: pedagangRequest.email
+                email: registerRequest.email
             }
         });
 
         if (totalPedagangWithSameEmail != 0) {
-            throw new ResponseError(409, 'Email sudah terdaftar');
+            throw new ResponseError(409, 'Email already registered');
         }
 
-        pedagangRequest.id = 'pedagang-' + uuid();
-        pedagangRequest.password = await bcrypt.hash(pedagangRequest.password, 10);
+        const otp = await prismaClient.otp.findFirst({
+            where: {
+                email: registerRequest.email
+            }
+        })
+
+        if (registerRequest.otp != otp!.otp) {
+            throw new ResponseError(401, 'OTP Wrong');
+        }
+
+        registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
+        const { otp: string, ...registerData } = registerRequest;
 
         const pedagang = await prismaClient.pedagang.create({
-            data: pedagangRequest
+            data: {
+                id: 'pedagang-' + uuid(),
+                ...registerData
+            }
         });
+
+        await prismaClient.otp.deleteMany({
+            where: {
+                email: registerRequest.email
+            }
+        })
+
+        await prismaClient.pedagang.update({
+            where: {
+                email: registerRequest.email
+            },
+            data: {
+                verified_email: true
+            }
+        })
 
         return toPedagangResponse(pedagang);
     }

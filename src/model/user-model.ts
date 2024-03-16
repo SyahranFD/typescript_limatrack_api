@@ -11,10 +11,10 @@ export type UserResponse = {
 }
 
 export type CreateUserRequest = {
-    id: string;
     nama_lengkap: string;
     email: string;
     password: string;
+    otp: string;
 }
 
 export type LoginUserRequest = {

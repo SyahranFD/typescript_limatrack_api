@@ -17,7 +17,7 @@ export class UserTest {
             data: {
                 id: "user-1",
                 nama_lengkap: "Rafa Syahran",
-                email: "rafa@gmail.com",
+                email: "fadhilrafa1@gmail.com",
                 password: await bcrypt.hash("rafapass", 10),
                 token: "token-1",
             }

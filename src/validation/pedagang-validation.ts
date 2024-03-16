@@ -15,6 +15,7 @@ export class PedagangValidation {
         sertifikasi_halal: z.boolean().optional(),
         latitude: z.string().min(1).max(100).optional(),
         longitude: z.string().min(1).max(100).optional(),
+        otp: z.string().min(6).max(6),
     });
 
     static readonly LOGIN: ZodType = z.object({

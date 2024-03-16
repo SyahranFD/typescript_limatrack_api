@@ -31,6 +31,15 @@ model User {
   @@map("users")
 }
 
+model otp {
+  id         String   @id @db.VarChar(100)
+  email      String   @unique @db.VarChar(320)
+  otp        String   @db.VarChar(100)
+  created_at DateTime @db.DateTime() @default(now())
+
+  @@map("otps")
+}
+
 model Pedagang {
   id                String   @id @db.VarChar(100)
   email             String   @unique @db.VarChar(320)
