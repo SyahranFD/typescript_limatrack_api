@@ -35,7 +35,7 @@ model otp {
   id         String   @id @db.VarChar(100)
   email      String   @unique @db.VarChar(320)
   otp        String   @db.VarChar(100)
-  created_at DateTime @db.DateTime() @default(now())
+  created_at DateTime @default(now()) @db.DateTime()
 
   @@map("otps")
 }
@@ -75,7 +75,8 @@ model Jajanan {
   nama        String  @db.VarChar(100)
   harga       Int     @db.Int()
   image       String  @db.VarChar(2000)
-  status      Boolean @db.TinyInt()
+  tersedia    Boolean @db.TinyInt()
+  kategori    String  @db.VarChar(100)
 
   pedagang Pedagang @relation(fields: [pedagang_id], references: [id])
 

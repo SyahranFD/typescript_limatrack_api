@@ -122,4 +122,18 @@ export class PedagangService {
 
         return toPedagangResponse(result);
     }
+
+    static async checkPedagangMustExist(pedagangId: string): Promise<Pedagang> {
+        const pedagang = await prismaClient.pedagang.findFirst({
+            where: {
+                id: pedagangId
+            }
+        });
+
+        if (!pedagang) {
+            throw new ResponseError(404, 'Pedagang not found');
+        }
+
+        return pedagang;
+    }
 }
