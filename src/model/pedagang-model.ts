@@ -41,6 +41,8 @@ export type UpdatePedagangRequest = {
     id: string;
     email: string;
     password: string;
+    verified_email?: boolean;
+    token?: string;
     nama_warung: string;
     nama_pedagang: string;
     image?: string;

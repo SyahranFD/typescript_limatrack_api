@@ -121,6 +121,44 @@ describe('GET /api/pedagang/current', () => {
     });
 })
 
+describe('PUT /api/pedagang/current', () => {
+    beforeEach(async () => {
+        await PedagangTest.create();
+    })
+
+    afterEach(async () => {
+        await PedagangTest.delete();
+    })
+
+    it('should be able to update current pedagang', async () => {
+        const response = await supertest(web)
+            .put("/api/pedagang/current")
+            .set("X-API-TOKEN", "token-1")
+            .send({
+                id: "pedagang-1",
+                email: "fadhilrafa1@gmail.com",
+                password: "rafapass",
+                verified_email: true,
+                token: "token-1",
+                nama_warung: "Warung Rafa",
+                nama_pedagang: "Rafa Supri",
+                image: "image-1",
+                buka: true,
+                jam_buka: "08:00",
+                jam_tutup: "17:00",
+                daerah_dagang: "Jakarta",
+                sertifikasi_halal: true,
+                latitude: "-6.753575877006632",
+                longitude: "110.84286600359306",
+            })
+
+        logger.debug(response.body);
+        expect(response.status).toBe(200);
+        expect(response.body.data.id).toBeDefined();
+        expect(response.body.data.nama_pedagang).toBe("Rafa Supri");
+    })
+})
+
 describe('DELETE /api/pedagang/current', () => {
     beforeEach(async () => {
         await PedagangTest.create();

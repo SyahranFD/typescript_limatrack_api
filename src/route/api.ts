@@ -15,6 +15,7 @@ apiRouter.delete("/api/users/current", UserController.logout)
 
 // Pedagang API
 apiRouter.get("/api/pedagang/current", PedagangController.getCurrent)
+apiRouter.put("/api/pedagang/current", PedagangController.update)
 apiRouter.delete("/api/pedagang/current", PedagangController.logout)
 
 // Jajanan API

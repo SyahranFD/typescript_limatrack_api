@@ -2,17 +2,17 @@ import {
     CreatePedagangRequest,
     LoginPedagangRequest,
     PedagangResponse,
-    toPedagangResponse
+    toPedagangResponse, UpdatePedagangRequest
 } from "../model/pedagang-model";
 import {Validation} from "../validation/validation";
-import {UserValidation} from "../validation/user-validation";
 import {PedagangValidation} from "../validation/pedagang-validation";
 import {Pedagang, User} from "@prisma/client";
 import {prismaClient} from "../application/database";
 import {ResponseError} from "../error/response-error";
 import {v4 as uuid} from "uuid";
 import bcrypt from "bcrypt";
-import {toUserResponse, UserResponse} from "../model/user-model";
+import {toUserResponse, UpdateUserRequest, UserResponse} from "../model/user-model";
+import {UserValidation} from "../validation/user-validation";
 
 export class PedagangService {
     static async register(request: CreatePedagangRequest): Promise<PedagangResponse> {
@@ -101,15 +101,27 @@ export class PedagangService {
     }
 
     static async getAll(): Promise<PedagangResponse[]> {
-        const pedagang = await prismaClient.pedagang.findMany({
-            include: { Jajanan: true }
+        return prismaClient.pedagang.findMany({
+            include: {Jajanan: true}
         });
-
-        return pedagang;
     }
 
     static async getCurrent(pedagang: Pedagang): Promise<PedagangResponse> {
         return toPedagangResponse(pedagang);
+    }
+
+    static async update(pedagang: Pedagang, request: UpdatePedagangRequest): Promise<PedagangResponse> {
+        const updateRequest = Validation.validate(PedagangValidation.UPDATE, request);
+        updateRequest.password = await bcrypt.hash(updateRequest.password, 10);
+
+        const result = await prismaClient.pedagang.update({
+            where: {
+                email: pedagang.email
+            },
+            data: updateRequest
+        });
+
+        return toPedagangResponse(result);
     }
 
     static async logout(pedagang: Pedagang): Promise<PedagangResponse> {
@@ -123,19 +135,5 @@ export class PedagangService {
         });
 
         return toPedagangResponse(result);
-    }
-
-    static async checkPedagangMustExist(pedagangId: string): Promise<Pedagang> {
-        const pedagang = await prismaClient.pedagang.findFirst({
-            where: {
-                id: pedagangId
-            }
-        });
-
-        if (!pedagang) {
-            throw new ResponseError(404, 'Pedagang not found');
-        }
-
-        return pedagang;
     }
 }

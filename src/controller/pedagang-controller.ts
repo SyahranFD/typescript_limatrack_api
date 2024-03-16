@@ -1,9 +1,10 @@
 import {Request, Response, NextFunction} from "express";
-import {CreatePedagangRequest, LoginPedagangRequest} from "../model/pedagang-model";
+import {CreatePedagangRequest, LoginPedagangRequest, UpdatePedagangRequest} from "../model/pedagang-model";
 import {PedagangService} from "../service/pedagang-service";
 import {UserRequest} from "../type/user-request";
 import {UserService} from "../service/user-service";
 import {PedagangRequest} from "../type/pedagang-request";
+import {UpdateUserRequest} from "../model/user-model";
 
 export class PedagangController {
     static async register(req: Request, res: Response, next: NextFunction) {
@@ -44,6 +45,18 @@ export class PedagangController {
     static async getCurrent(req: PedagangRequest, res: Response, next: NextFunction) {
         try {
             const response = await PedagangService.getCurrent(req.pedagang!);
+            res.status(200).json({
+                data: response
+            })
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async update(req: PedagangRequest, res: Response, next: NextFunction) {
+        try {
+            const request: UpdatePedagangRequest = req.body as UpdatePedagangRequest;
+            const response = await PedagangService.update(req.pedagang!, request);
             res.status(200).json({
                 data: response
             })

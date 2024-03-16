@@ -106,6 +106,7 @@ export class UserService {
 
     static async update(user: User, request: UpdateUserRequest): Promise<UserResponse> {
         const updateRequest = Validation.validate(UserValidation.UPDATE, request);
+        updateRequest.password = await bcrypt.hash(updateRequest.password, 10);
 
         const result = await prismaClient.user.update({
             where: {
