@@ -27,8 +27,8 @@ export type UpdateUserRequest = {
     nama_lengkap: string;
     email: string;
     password: string;
-    latitude?: string | null;
-    longitude?: string | null;
+    latitude?: string;
+    longitude?: string;
 }
 
 export function toUserResponse(user: User): UserResponse {

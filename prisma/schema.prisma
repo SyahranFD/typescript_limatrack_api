@@ -114,12 +114,12 @@ model Cart {
 
   user         User           @relation(fields: [user_id], references: [id])
   pedagang     Pedagang       @relation(fields: [pedagang_id], references: [id])
-  Cart_Jajanan Cart_Jajanan[]
+  Cart_Item Cart_Item[]
 
   @@map("carts")
 }
 
-model Cart_Jajanan {
+model Cart_Item {
   id         String @id @db.VarChar(100)
   cart_id    String @db.VarChar(100)
   jajanan_id String @db.VarChar(100)
@@ -128,7 +128,7 @@ model Cart_Jajanan {
 
   cart Cart @relation(fields: [cart_id], references: [id])
 
-  @@map("cart_jajanans")
+  @@map("Cart_Items")
 }
 
 model Order {
@@ -141,12 +141,12 @@ model Order {
 
   user          User            @relation(fields: [user_id], references: [id])
   pedagang      Pedagang        @relation(fields: [pedagang_id], references: [id])
-  Order_Jajanan Order_Jajanan[]
+  Order_Item Order_Item[]
 
   @@map("orders")
 }
 
-model Order_Jajanan {
+model Order_Item {
   id         String @id @db.VarChar(100)
   order_id   String @db.VarChar(100)
   jajanan_id String @db.VarChar(100)
@@ -155,7 +155,7 @@ model Order_Jajanan {
 
   order Order @relation(fields: [order_id], references: [id])
 
-  @@map("order_jajanans")
+  @@map("Order_Items")
 }
 
 model Langganan {

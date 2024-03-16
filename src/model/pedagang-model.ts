@@ -24,11 +24,11 @@ export type CreatePedagangRequest = {
     password: string;
     nama_warung: string;
     nama_pedagang: string;
-    image?: string | null;
-    jam_buka?: string | null;
-    jam_tutup?: string | null;
-    daerah_dagang?: string | null;
-    sertifikasi_halal?: boolean | null;
+    image?: string;
+    jam_buka?: string;
+    jam_tutup?: string;
+    daerah_dagang?: string;
+    sertifikasi_halal?: boolean;
     otp: string;
 }
 
@@ -43,15 +43,15 @@ export type UpdatePedagangRequest = {
     password: string;
     nama_warung: string;
     nama_pedagang: string;
-    image?: string | null;
-    buka?: boolean | null;
-    jam_buka?: string | null;
-    jam_tutup?: string | null;
-    daerah_dagang?: string | null;
-    rating?: number | null;
-    sertifikasi_halal?: boolean | null;
-    latitude?: string | null;
-    longitude?: string | null;
+    image?: string;
+    buka?: boolean;
+    jam_buka?: string;
+    jam_tutup?: string;
+    daerah_dagang?: string;
+    rating?: number;
+    sertifikasi_halal?: boolean;
+    latitude?: string;
+    longitude?: string;
 }
 
 export function toPedagangResponse(pedagang: Pedagang): PedagangResponse {
