@@ -9,7 +9,7 @@ function toPedagangResponse(pedagang) {
         nama_warung: pedagang.nama_warung,
         nama_pedagang: pedagang.nama_pedagang,
         image: pedagang.image,
-        status: pedagang.status,
+        buka: pedagang.buka,
         jam_buka: pedagang.jam_buka,
         jam_tutup: pedagang.jam_tutup,
         daerah_dagang: pedagang.daerah_dagang,

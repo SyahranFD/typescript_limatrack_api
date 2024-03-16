@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -21,32 +32,111 @@ const response_error_1 = require("../error/response-error");
 const uuid_1 = require("uuid");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 class PedagangService {
-    static create(request) {
+    static register(request) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pedagangRequest = validation_1.Validation.validate(pedagang_validation_1.PedagangValidation.CREATE, request);
+            const registerRequest = validation_1.Validation.validate(pedagang_validation_1.PedagangValidation.REGISTER, request);
             const totalPedagangWithSameEmail = yield database_1.prismaClient.pedagang.count({
                 where: {
-                    email: pedagangRequest.email
+                    email: registerRequest.email
                 }
             });
             if (totalPedagangWithSameEmail != 0) {
-                throw new response_error_1.ResponseError(409, 'Email sudah terdaftar');
+                throw new response_error_1.ResponseError(409, 'Email already registered');
             }
-            pedagangRequest.id = 'pedagang-' + (0, uuid_1.v4)();
-            pedagangRequest.password = yield bcrypt_1.default.hash(pedagangRequest.password, 10);
+            const otp = yield database_1.prismaClient.otp.findFirst({
+                where: {
+                    email: registerRequest.email
+                }
+            });
+            if (registerRequest.otp != otp.otp) {
+                throw new response_error_1.ResponseError(401, 'OTP Wrong');
+            }
+            registerRequest.password = yield bcrypt_1.default.hash(registerRequest.password, 10);
+            const { otp: string } = registerRequest, registerData = __rest(registerRequest, ["otp"]);
             const pedagang = yield database_1.prismaClient.pedagang.create({
-                data: pedagangRequest
+                data: Object.assign({ id: 'pedagang-' + (0, uuid_1.v4)() }, registerData)
+            });
+            yield database_1.prismaClient.otp.deleteMany({
+                where: {
+                    email: registerRequest.email
+                }
+            });
+            yield database_1.prismaClient.pedagang.update({
+                where: {
+                    email: registerRequest.email
+                },
+                data: {
+                    verified_email: true
+                }
             });
             return (0, pedagang_model_1.toPedagangResponse)(pedagang);
         });
     }
+    static login(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const pedagangRequest = validation_1.Validation.validate(pedagang_validation_1.PedagangValidation.LOGIN, request);
+            let pedagang = yield database_1.prismaClient.pedagang.findUnique({
+                where: {
+                    email: pedagangRequest.email
+                }
+            });
+            if (!pedagang) {
+                throw new response_error_1.ResponseError(404, 'Email tidak terdaftar');
+            }
+            const isPasswordValid = yield bcrypt_1.default.compare(pedagangRequest.password, pedagang.password);
+            if (!isPasswordValid) {
+                throw new response_error_1.ResponseError(401, 'Password salah');
+            }
+            pedagang = yield database_1.prismaClient.pedagang.update({
+                where: {
+                    email: pedagangRequest.email
+                },
+                data: {
+                    token: (0, uuid_1.v4)()
+                }
+            });
+            const response = (0, pedagang_model_1.toPedagangResponse)(pedagang);
+            response.token = pedagang.token;
+            return response;
+        });
+    }
     static getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const pedagang = yield database_1.prismaClient.pedagang.findMany();
-            return pedagang.map(pedagang_model_1.toPedagangResponse);
-            // return {
-            //     data: pedagang.map(pedagang => toPedagangResponse(pedagang))
-            // }
+            const pedagang = yield database_1.prismaClient.pedagang.findMany({
+                include: { Jajanan: true }
+            });
+            return pedagang;
+        });
+    }
+    static getCurrent(pedagang) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, pedagang_model_1.toPedagangResponse)(pedagang);
+        });
+    }
+    static logout(pedagang) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield database_1.prismaClient.pedagang.update({
+                where: {
+                    email: pedagang.email
+                },
+                data: {
+                    token: null
+                }
+            });
+            return (0, pedagang_model_1.toPedagangResponse)(result);
+        });
+    }
+    static checkPedagangMustExist(pedagangId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const pedagang = yield database_1.prismaClient.pedagang.findFirst({
+                where: {
+                    id: pedagangId
+                }
+            });
+            if (!pedagang) {
+                throw new response_error_1.ResponseError(404, 'Pedagang not found');
+            }
+            return pedagang;
         });
     }
 }

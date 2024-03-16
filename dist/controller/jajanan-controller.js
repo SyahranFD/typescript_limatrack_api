@@ -9,14 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PedagangController = void 0;
-const pedagang_service_1 = require("../service/pedagang-service");
-class PedagangController {
-    static register(req, res, next) {
+exports.JajananController = void 0;
+const jajanan_service_1 = require("../service/jajanan-service");
+const logging_1 = require("../application/logging");
+class JajananController {
+    static create(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const request = req.body;
-                const response = yield pedagang_service_1.PedagangService.register(request);
+                const response = yield jajanan_service_1.JajananService.create(req.pedagang, request);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
                 res.status(200).json({
                     data: response
                 });
@@ -26,11 +28,28 @@ class PedagangController {
             }
         });
     }
-    static login(req, res, next) {
+    static getById(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const jajananId = req.params.jajananId;
+                const response = yield jajanan_service_1.JajananService.getById(req.pedagang, jajananId);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    static updateById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const request = req.body;
-                const response = yield pedagang_service_1.PedagangService.login(request);
+                request.id = req.params.jajananId;
+                const response = yield jajanan_service_1.JajananService.update(req.pedagang, request);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
                 res.status(200).json({
                     data: response
                 });
@@ -40,38 +59,14 @@ class PedagangController {
             }
         });
     }
-    static getAll(req, res, next) {
+    static removeById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield pedagang_service_1.PedagangService.getAll();
+                const jajananId = req.params.jajananId;
+                const response = yield jajanan_service_1.JajananService.removeById(req.pedagang, jajananId);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
                 res.status(200).json({
-                    data: response
-                });
-            }
-            catch (e) {
-                next(e);
-            }
-        });
-    }
-    static getCurrent(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const response = yield pedagang_service_1.PedagangService.getCurrent(req.pedagang);
-                res.status(200).json({
-                    data: response
-                });
-            }
-            catch (e) {
-                next(e);
-            }
-        });
-    }
-    static logout(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const response = yield pedagang_service_1.PedagangService.logout(req.pedagang);
-                res.status(200).json({
-                    data: "Berhasil Logout"
+                    data: "Jajanan berhasil dihapus"
                 });
             }
             catch (e) {
@@ -80,4 +75,4 @@ class PedagangController {
         });
     }
 }
-exports.PedagangController = PedagangController;
+exports.JajananController = JajananController;

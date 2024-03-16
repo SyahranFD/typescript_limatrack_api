@@ -101,9 +101,11 @@ export class PedagangService {
     }
 
     static async getAll(): Promise<PedagangResponse[]> {
-        const pedagang = await prismaClient.pedagang.findMany();
+        const pedagang = await prismaClient.pedagang.findMany({
+            include: { Jajanan: true }
+        });
 
-        return pedagang.map(toPedagangResponse);
+        return pedagang;
     }
 
     static async getCurrent(pedagang: Pedagang): Promise<PedagangResponse> {

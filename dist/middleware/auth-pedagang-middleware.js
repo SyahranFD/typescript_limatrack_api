@@ -9,26 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authMiddleware = void 0;
+exports.authPedagangMiddleware = void 0;
 const database_1 = require("../application/database");
-const auth_pedagang_middleware_1 = require("./auth-pedagang-middleware");
-const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const authPedagangMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.get('X-API-TOKEN');
     if (token) {
-        const user = yield database_1.prismaClient.user.findFirst({
+        const pedagang = yield database_1.prismaClient.pedagang.findFirst({
             where: {
                 token: token
             }
         });
-        if (user) {
-            req.user = user;
+        if (pedagang) {
+            req.pedagang = pedagang;
             next();
             return;
         }
     }
-    yield (0, auth_pedagang_middleware_1.authPedagangMiddleware)(req, res, next);
-    // res.status(401).json({
-    //     errors: "Unauthorized"
-    // }).end();
+    res.status(401).json({
+        errors: "Unauthorized"
+    }).end();
 });
-exports.authMiddleware = authMiddleware;
+exports.authPedagangMiddleware = authPedagangMiddleware;

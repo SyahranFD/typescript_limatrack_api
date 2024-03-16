@@ -4,6 +4,7 @@ import {PedagangTest} from "./pedagang-util-test";
 import {logger} from "../../src/application/logging";
 import {OtpTest} from "../otp/otp-util-test";
 import {UserTest} from "../user/user-test-util";
+import {JajananTest} from "../jajanan/jajanan-util-test";
 
 describe('POST /api/pedagang/register', () => {
 
@@ -70,9 +71,11 @@ describe('POST /api/pedagang/login', () => {
 describe('GET /api/pedagang', () => {
     beforeEach(async () => {
         await PedagangTest.create();
+        await JajananTest.create();
     })
 
     afterEach(async () => {
+        await JajananTest.delete();
         await PedagangTest.delete();
     })
 

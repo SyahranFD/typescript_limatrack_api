@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -31,12 +42,33 @@ class UserService {
                 }
             });
             if (totalUserWithSameEmail != 0) {
-                throw new response_error_1.ResponseError(409, 'Email sudah terdaftar');
+                throw new response_error_1.ResponseError(409, 'Email already registered');
             }
-            registerRequest.id = 'user-' + (0, uuid_1.v4)();
+            const otp = yield database_1.prismaClient.otp.findFirst({
+                where: {
+                    email: registerRequest.email
+                }
+            });
+            if (registerRequest.otp != otp.otp) {
+                throw new response_error_1.ResponseError(401, 'OTP Wrong');
+            }
             registerRequest.password = yield bcrypt_1.default.hash(registerRequest.password, 10);
+            const { otp: string } = registerRequest, registerData = __rest(registerRequest, ["otp"]);
             const user = yield database_1.prismaClient.user.create({
-                data: registerRequest
+                data: Object.assign({ id: 'user-' + (0, uuid_1.v4)() }, registerData)
+            });
+            yield database_1.prismaClient.otp.deleteMany({
+                where: {
+                    email: registerRequest.email
+                }
+            });
+            yield database_1.prismaClient.user.update({
+                where: {
+                    email: registerRequest.email
+                },
+                data: {
+                    verified_email: true
+                }
             });
             return (0, user_model_1.toUserResponse)(user);
         });
