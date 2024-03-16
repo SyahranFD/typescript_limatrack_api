@@ -7,12 +7,12 @@ import {
 import {Validation} from "../validation/validation";
 import {UserValidation} from "../validation/user-validation";
 import {PedagangValidation} from "../validation/pedagang-validation";
-import {User} from "@prisma/client";
+import {Pedagang, User} from "@prisma/client";
 import {prismaClient} from "../application/database";
 import {ResponseError} from "../error/response-error";
 import {v4 as uuid} from "uuid";
 import bcrypt from "bcrypt";
-import {toUserResponse} from "../model/user-model";
+import {toUserResponse, UserResponse} from "../model/user-model";
 
 export class PedagangService {
     static async register(request: CreatePedagangRequest): Promise<PedagangResponse> {
@@ -104,5 +104,22 @@ export class PedagangService {
         const pedagang = await prismaClient.pedagang.findMany();
 
         return pedagang.map(toPedagangResponse);
+    }
+
+    static async getCurrent(pedagang: Pedagang): Promise<PedagangResponse> {
+        return toPedagangResponse(pedagang);
+    }
+
+    static async logout(pedagang: Pedagang): Promise<PedagangResponse> {
+        const result = await prismaClient.pedagang.update({
+            where: {
+                email: pedagang.email
+            },
+            data: {
+                token: null
+            }
+        });
+
+        return toPedagangResponse(result);
     }
 }

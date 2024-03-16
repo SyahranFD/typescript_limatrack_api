@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {prismaClient} from "../application/database";
 import {UserRequest} from "../type/user-request";
+import {authPedagangMiddleware} from "./auth-pedagang-middleware";
 
 export const authMiddleware = async (req: UserRequest, res: Response, next: NextFunction) => {
     const token = req.get('X-API-TOKEN');
@@ -19,7 +20,9 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
         }
     }
 
-    res.status(401).json({
-        errors: "Unauthorized"
-    }).end();
+    await authPedagangMiddleware(req, res, next);
+
+    // res.status(401).json({
+    //     errors: "Unauthorized"
+    // }).end();
 }

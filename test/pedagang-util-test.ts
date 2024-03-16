@@ -8,6 +8,7 @@ export class PedagangTest {
                 id: "pedagang-1",
                 email: "fadhilrafa1@gmail.com",
                 password: await bcrypt.hash("rafapass", 10),
+                token: "token-1",
                 nama_warung: "Warung Rafa",
                 nama_pedagang: "Rafa Syahran",
                 image: "image-1",
