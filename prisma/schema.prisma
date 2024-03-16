@@ -49,7 +49,7 @@ model Pedagang {
   nama_warung       String   @db.VarChar(100)
   nama_pedagang     String   @db.VarChar(100)
   image             String?  @db.VarChar(2000)
-  status            String?  @db.VarChar(100)
+  buka              Boolean? @db.TinyInt()
   jam_buka          String?  @db.VarChar(100)
   jam_tutup         String?  @db.VarChar(100)
   daerah_dagang     String?  @db.VarChar(100)

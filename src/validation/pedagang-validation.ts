@@ -7,14 +7,10 @@ export class PedagangValidation {
         nama_warung: z.string().min(6).max(100),
         nama_pedagang: z.string().min(6).max(100),
         image: z.string().min(1).max(2000).optional(),
-        status: z.string().min(1).max(100).optional(),
         jam_buka: z.string().optional(),
         jam_tutup: z.string().optional(),
         daerah_dagang: z.string().min(1).max(100).optional(),
-        rating: z.number().optional(),
         sertifikasi_halal: z.boolean().optional(),
-        latitude: z.string().min(1).max(100).optional(),
-        longitude: z.string().min(1).max(100).optional(),
         otp: z.string().min(6).max(6),
     });
 

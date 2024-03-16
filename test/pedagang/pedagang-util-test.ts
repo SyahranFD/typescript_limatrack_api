@@ -12,7 +12,7 @@ export class PedagangTest {
                 nama_warung: "Warung Rafa",
                 nama_pedagang: "Rafa Syahran",
                 image: "image-1",
-                status: "Buka",
+                buka: true,
                 jam_buka: "08:00",
                 jam_tutup: "17:00",
                 daerah_dagang: "Jakarta",

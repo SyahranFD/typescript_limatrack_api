@@ -23,14 +23,10 @@ describe('POST /api/pedagang/register', () => {
                 nama_warung: "Warung Rafa",
                 nama_pedagang: "Rafa Syahran",
                 image: "image-1",
-                status: "Buka",
                 jam_buka: "08:00",
                 jam_tutup: "17:00",
                 daerah_dagang: "Jakarta",
-                rating: 4.5,
                 sertifikasi_halal: true,
-                latitude: "-6.753575877006632",
-                longitude: "110.84286600359306",
                 otp: "123456"
             });
 
@@ -41,14 +37,10 @@ describe('POST /api/pedagang/register', () => {
         expect(response.body.data.nama_warung).toBe("Warung Rafa");
         expect(response.body.data.nama_pedagang).toBe("Rafa Syahran");
         expect(response.body.data.image).toBe("image-1");
-        expect(response.body.data.status).toBe("Buka");
         expect(response.body.data.jam_buka).toBe("08:00");
         expect(response.body.data.jam_tutup).toBe("17:00");
         expect(response.body.data.daerah_dagang).toBe("Jakarta");
-        expect(response.body.data.rating).toBe(4.5);
         expect(response.body.data.sertifikasi_halal).toBe(true);
-        expect(response.body.data.latitude).toBe("-6.753575877006632");
-        expect(response.body.data.longitude).toBe("110.84286600359306");
     });
 })
 
