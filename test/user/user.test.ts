@@ -1,8 +1,8 @@
 import supertest from "supertest";
 import {UserTest} from "./user-test-util";
-import {web} from "../src/application/web";
-import {logger} from "../src/application/logging";
-import {OtpTest} from "./otp-util-test";
+import {web} from "../../src/application/web";
+import {logger} from "../../src/application/logging";
+import {OtpTest} from "../otp/otp-util-test";
 
 describe('POST /api/users/register', () => {
 

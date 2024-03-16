@@ -1,9 +1,9 @@
 import supertest from "supertest";
-import {web} from "../src/application/web";
+import {web} from "../../src/application/web";
 import {PedagangTest} from "./pedagang-util-test";
-import {logger} from "../src/application/logging";
-import {OtpTest} from "./otp-util-test";
-import {UserTest} from "./user-test-util";
+import {logger} from "../../src/application/logging";
+import {OtpTest} from "../otp/otp-util-test";
+import {UserTest} from "../user/user-test-util";
 
 describe('POST /api/pedagang/register', () => {
 

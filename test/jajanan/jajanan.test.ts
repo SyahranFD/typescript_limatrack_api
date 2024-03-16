@@ -1,7 +1,7 @@
-import {logger} from "../src/application/logging";
+import {logger} from "../../src/application/logging";
 import supertest from "supertest";
-import {web} from "../src/application/web";
-import {PedagangTest} from "./pedagang-util-test";
+import {web} from "../../src/application/web";
+import {PedagangTest} from "../pedagang/pedagang-util-test";
 import {JajananTest} from "./jajanan-util-test";
 
 describe('POST /api/jajanan', () => {

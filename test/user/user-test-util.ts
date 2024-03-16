@@ -1,4 +1,4 @@
-import {prismaClient} from "../src/application/database";
+import {prismaClient} from "../../src/application/database";
 import bcrypt from "bcrypt";
 import {User} from "@prisma/client";
 

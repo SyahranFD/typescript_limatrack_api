@@ -1,4 +1,4 @@
-import {prismaClient} from "../src/application/database";
+import {prismaClient} from "../../src/application/database";
 
 export class JajananTest {
     static async create() {

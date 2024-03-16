@@ -1,5 +1,5 @@
-import {logger} from "../src/application/logging";
-import {web} from "../src/application/web";
+import {logger} from "../../src/application/logging";
+import {web} from "../../src/application/web";
 import supertest from "supertest";
 import {OtpTest} from "./otp-util-test";
 
